@@ -1,0 +1,56 @@
+import unittest
+from dataclasses import dataclass
+from datetime import datetime
+import math
+from typing import List
+
+class InteractionData:     # here were validating the user inputs first wheather they are within the range specified for score ,x,y
+    def _post_inti_(self):
+        if (self.score< 0 or self.score>100): 
+            raise ValueError("score must be between 0 and 100")
+        if  (self.x<-50 or self.x>50):
+            raise ValueError("x must be between -50 and 50")
+        if  (self.y<-50 or self.y>50):
+            raise ValueError("y must be between -50 and 50")
+    def _init_(self,id,timestamp,score,x,y):
+        self.id=id
+        self.timestamp=timestamp
+        self.score=score
+        self.x=x
+        self.y=y
+def e_distance(point1,point2): 
+    return math.sqrt((point1.x-point2.x)*2+(point1.y-point2.y)*2)   #  formula nd ellucdian diatance means calculating the distance b/w two points
+def calculate_distances(interactions:List[InteractionData])->List[float]: #here we pass the objects of interaction data in form of lists
+    distance=[]
+    for i in range(len(interactions)): #interactiosns is a list of interaction data obj
+        for j in range(i+1,len(interactions)):
+            distance.append(e_distance(distance[i],distance[j]))
+    return distance
+class TestInteractionData(unittest.TestCase):
+    
+    def test_data(self):
+        with self.assertRaises(ValueError):
+            id="xyz"
+            timestamp=345
+            score=45
+            x=20
+            y=32
+            event=InteractionData("xyz", 345, 45, 20, 32)
+            assert event.id==id
+            assert event.timestamp==timestamp
+            assert event.score==score
+            assert event.x==x
+            assert event.y==y
+    def test_distance(self):
+        with self.assertRaises(ValueError):
+            point1=InteractionData("ab1",173732, 9000, 10, -10)
+            point2=InteractionData("bc1",7473478,46,20,-20)
+
+            distance=e_distance(point1, point2)
+            exp_dist=math.sqrt((10-(20))*2+(-10-(-20))*2)
+            print(distance)
+            assert distance==exp_dist
+
+
+if _name=='main_':
+    unittest.main()
